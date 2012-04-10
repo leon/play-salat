@@ -13,7 +13,7 @@ Start by adding the plugin, in your `project/Build.scala`
 Then we need to add a resolver so that `sbt` knows where to get it from
 
     val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings(
-      resolvers += "MongoDB Plugin Repo" at "Havn't got my OSS repo yet.."
+      resolvers += "OSS Repo" at "https://oss.sonatype.org/content/repositories/snapshots"
     )
 
 We now need to register the plugin, this is done by creating(or appending) to the `conf/play.plugins` file
