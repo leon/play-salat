@@ -1,0 +1,9 @@
+@(users: Seq[User])
+
+@main("Hello Users!") {
+    <ul>
+        @users.map { user =>
+            <li>@user.username</li>
+        }
+    </ul>
+}
