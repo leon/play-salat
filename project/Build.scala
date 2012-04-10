@@ -38,9 +38,9 @@ object ProjectBuild extends Build {
         </developer>
       </developers>
     ),
-    publishTo <<= version { (v: String) =>
+    publishTo <<= version { version: String =>
       val nexus = "https://oss.sonatype.org/"
-      if (v.trim.endsWith("SNAPSHOT"))
+      if (version.trim.endsWith("SNAPSHOT"))
         Some("snapshots" at nexus + "content/repositories/snapshots")
       else
         Some("releases" at nexus + "service/local/staging/deploy/maven2")
