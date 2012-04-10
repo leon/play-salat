@@ -16,7 +16,11 @@ Then we need to add a resolver so that `sbt` knows where to get it from
       resolvers += "MongoDB Plugin Repo" at "Havn't got my OSS repo yet.."
     )
 
-Then we continue to the `conf/application.conf` file. We need to disable some plugins that we don't need.
+We now need to register the plugin, this is done by creating(or appending) to the `conf/play.plugins` file
+
+    550:se.radley.plugin.mongodb.MongoDBPlugin
+
+We continue to edit the `conf/application.conf` file. We need to disable some plugins that we don't need.
 Add these lines:
 
     dbplugin = disabled
@@ -24,7 +28,7 @@ Add these lines:
     ehcacheplugin = disabled
 
 ## Configuration
-now we need to setup our connections. The plugin is modeled after how the (DB / JDBC) plugin in play works.
+now we need to setup our connections. The plugin is modeled after how plays DB plugin is built.
 
     mongodb.default.db = "mydb"
     # Optional values
