@@ -42,4 +42,4 @@ If you would like to connect to two databases you need to create two names
 
 Then when you call `getCollection("collectionname", "myotherdb")` you specify the name of the source
 
-Check out the [sample directory](https://github.com/leon/play-mongodb/tree/master/sample)
+Check out the [sample directory](https://github.com/leon/play-mongodb/tree/master/sample) and the [wiki](https://github.com/leon/play-mongodb/wiki)
