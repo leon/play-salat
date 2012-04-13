@@ -8,19 +8,19 @@ import com.mongodb.casbah.Imports._
 import com.novus.salat._
 
 object Application extends Controller {
-  
+
   def list() = Action {
-    val users = User.all.toList
+    val users = UserDAO.all.toList
     Ok(views.html.list(users))
   }
 
   def listByCountry(country: String) = Action {
-    val users = User.findByCountry(country).toList
+    val users = UserDAO.findByCountry(country).toList
     Ok(views.html.list(users))
   }
 
-  def view(id:ObjectId) = Action {
-    User.findOneByID(id).map( user =>
+  def view(id: ObjectId) = Action {
+    UserDAO.findOneByID(id).map( user =>
       Ok(views.html.user(user))
     ).getOrElse(NotFound)
   }
@@ -30,8 +30,8 @@ object Application extends Controller {
       username = username,
       password = "1234"
     )
-    User.save(user)
+    UserDAO.save(user)
     Ok(views.html.user(user))
   }
-  
+
 }

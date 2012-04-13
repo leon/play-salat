@@ -16,7 +16,7 @@ case class User(
   @Key("company_id")company: Option[ObjectId] = None
 )
 
-object User extends SalatDAO[User, ObjectId](collection = getCollection("users")) {
+object UserDAO extends SalatDAO[User, ObjectId](collection = getCollection("users")) {
   def all = find(MongoDBObject())
   def findOneByUsername(username: String): Option[User] = findOne(MongoDBObject("username" -> username))
   def findByCountry(country: String) = find(MongoDBObject("address.country" -> country)).toList
