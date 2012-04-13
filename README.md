@@ -17,7 +17,7 @@ Then we need to add a resolver so that `sbt` knows where to get it from
       resolvers += "OSS Repo" at "https://oss.sonatype.org/content/repositories/snapshots",
 
       // Add this if you want to be able to bind ObjectId's to query string or path variables
-      routesImport ++= Seq("se.radley.plugin.salat.Binders._")
+      routesImport += "se.radley.plugin.salat.Binders._"
     )
 
 We now need to register the plugin, this is done by creating(or appending) to the `conf/play.plugins` file
