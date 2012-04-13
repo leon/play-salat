@@ -4,8 +4,7 @@ import play.api.Play.current
 import java.util.{Date}
 import com.novus.salat._
 import com.mongodb.casbah.Imports._
-import se.radley.plugin.mongodb._
-import se.radley.plugin.mongodb.salat._
+import se.radley.plugin.salat._
 
 case class User(
   id: ObjectId = new ObjectId,

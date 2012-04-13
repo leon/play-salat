@@ -1,4 +1,4 @@
-package se.radley.plugin.mongodb
+package se.radley.plugin.salat
 
 import play.api._
 import play.api.mvc._
@@ -6,7 +6,7 @@ import play.api.Play.current
 import com.mongodb.Mongo
 import com.mongodb.casbah.{MongoCollection, MongoConnection}
 
-class MongoDBPlugin(app: Application) extends Plugin {
+class SalatPlugin(app: Application) extends Plugin {
 
   lazy val configuration = app.configuration.getConfig("mongodb").getOrElse(Configuration.empty)
 
@@ -42,7 +42,6 @@ class MongoDBPlugin(app: Application) extends Plugin {
   override def onStart() {
 
     // Clear all graters from salat to force reloading, see <https://github.com/novus/salat/issues/31>
-    import salat.ctx
     ctx.clearAllGraters()
 
     datasources.map { source =>
@@ -57,7 +56,7 @@ class MongoDBPlugin(app: Application) extends Plugin {
         db.getStats()
         app.mode match {
           case Mode.Test =>
-          case mode => Logger("mongodb").info("mongodb [" + source._2 + "] connected at " + source._1)
+          case mode => Logger("salat").info("mongodb [" + source._2 + "] connected at " + source._1)
         }
       } catch {
         case e => {
@@ -68,7 +67,7 @@ class MongoDBPlugin(app: Application) extends Plugin {
   }
 
   override def onStop() {
-    // @todo do we need to close the mongodb connection?
+    // @todo do we need to close the salat connection?
   }
 
   def getSource(name: String): MongoSource = {

@@ -5,7 +5,7 @@ object ProjectBuild extends Build {
 
   lazy val buildVersion =  "1.0-SNAPSHOT"
 
-  lazy val root = Project(id = "play-plugins-mongodb", base = file("."), settings = Project.defaultSettings).settings(
+  lazy val root = Project(id = "play-plugins-salat", base = file("."), settings = Project.defaultSettings).settings(
     organization := "se.radley",
     version := buildVersion,
     scalaVersion := "2.9.1",
@@ -18,7 +18,7 @@ object ProjectBuild extends Build {
     publishArtifact in Test := false,
     pomIncludeRepository := { _ => false },
     pomExtra := (
-      <url>http://jsuereth.com/scala-arm</url>
+      <url>http://github.com/leon/play-salat</url>
       <licenses>
         <license>
           <name>Apache 2.0</name>
@@ -27,8 +27,8 @@ object ProjectBuild extends Build {
         </license>
       </licenses>
       <scm>
-        <url>git@github.com:leon/play-mongodb.git</url>
-        <connection>scm:git:git@github.com:leon/play-mongodb.git</connection>
+        <url>git@github.com:leon/play-salat.git</url>
+        <connection>scm:git:git@github.com:leon/play-salat.git</connection>
       </scm>
       <developers>
         <developer>
