@@ -8,13 +8,14 @@ Salat is a ORM for MongoDBs scala driver called Casbah.
 Start by adding the plugin, in your `project/Build.scala`
 
     val appDependencies = Seq(
-      "se.radley" %% "play-plugins-salat" % "1.0"
+      "se.radley" %% "play-plugins-salat" % "1.0.1"
     )
 
-Then we can add the implicit converstions to and from ObjectId by adding to the routesImport
+Then we can add the implicit converstions to and from ObjectId by adding to the routesImport and add ObjectId to all the templates
 
     val main = PlayProject(appName, appVersion, appDependencies, mainLang = SCALA).settings(
-      routesImport += "se.radley.plugin.salat.Binders._"
+      routesImport += "se.radley.plugin.salat.Binders._",
+      templatesImport += "org.bson.types.ObjectId"
     )
 
 We now need to register the plugin, this is done by creating(or appending) to the `conf/play.plugins` file

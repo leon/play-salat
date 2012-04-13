@@ -33,4 +33,11 @@ object Binders {
     }
     def unbind(key: String, value: ObjectId) = value.toString
   }
+
+  /**
+   * Convert a ObjectId to a Javascript String
+   */
+  implicit def litteralObjectId = new JavascriptLitteral[ObjectId] {
+    def to(value: ObjectId) = value.toString
+  }
 }
