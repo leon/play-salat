@@ -19,6 +19,12 @@ object Application extends Controller {
     Ok(views.html.list(users))
   }
 
+  def view(id:ObjectId) = Action {
+    User.findOneByID(id).map( user =>
+      Ok(views.html.user(user))
+    ).getOrElse(NotFound)
+  }
+
   def create(username: String) = Action {
     val user = User(
       username = username,

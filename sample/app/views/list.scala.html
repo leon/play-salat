@@ -3,7 +3,7 @@
 @main("Hello Users!") {
     <ul>
         @users.map { user =>
-            <li>@user.username</li>
+            <li><a href="@routes.Application.view(user.id)">@user.username</a></li>
         }
     </ul>
 }

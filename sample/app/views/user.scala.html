@@ -1,5 +1,6 @@
 @(user:User)
 
 @main("Hello World!") {
-   <h1>"Hello my name is @user.username</h1>
+   <h1>Hello my name is @user.username</h1>
+   <p>I was added on the @user.added.format("dd MMM yyyy")</p>
 }
