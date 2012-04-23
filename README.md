@@ -8,7 +8,7 @@ Salat is a ORM for MongoDBs scala driver called Casbah.
 Start by adding the plugin, in your `project/Build.scala`
 
     val appDependencies = Seq(
-      "se.radley" %% "play-plugins-salat" % "1.0.1"
+      "se.radley" %% "play-plugins-salat" % "1.0.2"
     )
 
 Then we can add the implicit converstions to and from ObjectId by adding to the routesImport and add ObjectId to all the templates
@@ -20,7 +20,7 @@ Then we can add the implicit converstions to and from ObjectId by adding to the 
 
 We now need to register the plugin, this is done by creating(or appending) to the `conf/play.plugins` file
 
-    550:se.radley.plugin.salat.SalatPlugin
+    500:se.radley.plugin.salat.SalatPlugin
 
 We continue to edit the `conf/application.conf` file. We need to disable some plugins that we don't need.
 Add these lines:
@@ -46,6 +46,6 @@ If you would like to connect to two databases you need to create two names
 
     mongodb.myotherdb.db = "otherdb"
 
-Then when you call `getCollection("collectionname", "myotherdb")` you specify the name of the source
+Then when you call `mongoCollection("collectionname", "myotherdb")` you specify the name of the source
 
 Check out the [sample directory](https://github.com/leon/play-salat/tree/master/sample) and the [wiki](https://github.com/leon/play-salat/wiki)
