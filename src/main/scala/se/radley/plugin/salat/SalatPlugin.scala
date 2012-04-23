@@ -3,8 +3,7 @@ package se.radley.plugin.salat
 import play.api._
 import play.api.mvc._
 import play.api.Play.current
-import com.mongodb.Mongo
-import com.mongodb.casbah.{MongoCollection, MongoConnection}
+import com.mongodb.casbah.{WriteConcern, MongoCollection, MongoConnection}
 
 class SalatPlugin(app: Application) extends Plugin {
 
@@ -19,6 +18,16 @@ class SalatPlugin(app: Application) extends Plugin {
     val user: Option[String],
     val password: Option[String]
   ){
+    def collection(name: String) = {
+      val conn = MongoConnection(host, port)(db)
+      conn.setWriteConcern(WriteConcern.Safe)
+
+      if (user.isDefined && password.isDefined)
+        if (conn.authenticate(user.getOrElse(""), password.getOrElse("")))
+          throw new Exception("Couldn't login to MongoDB database: " + db)
+      conn(name)
+    }
+
     override def toString() = {
       if(user.isDefined) user.get + "@" else "" + host + ":" + port + "/" + db
     }
@@ -40,34 +49,12 @@ class SalatPlugin(app: Application) extends Plugin {
   override def enabled = isDisabled == false
 
   override def onStart() {
-
-    // Clear all graters from salat to force reloading, see <https://github.com/novus/salat/issues/31>
-    ctx.clearAllGraters()
-
     datasources.map { source =>
-      try {
-        val m = new Mongo(source._1.host, source._1.port)
-        val db = m.getDB(source._1.db)
-        if (source._1.user.isDefined && source._1.password.isDefined) {
-          val auth = db.authenticate(source._1.user.get, source._1.password.get.toArray);
-          if (auth == false)
-            throw configuration.reportError(source._2 + ".host", "Authentication failed for [" + source._1 + "]")
-        }
-        db.getStats()
-        app.mode match {
-          case Mode.Test =>
-          case mode => Logger("salat").info("mongodb [" + source._2 + "] connected at " + source._1)
-        }
-      } catch {
-        case e => {
-          throw configuration.reportError(source._2 + ".host", "Cannot connect to database [" + source._2 + "]: " + source._1, Some(e.getCause))
-        }
+      app.mode match {
+        case Mode.Test =>
+        case mode => Logger("play").info("mongodb [" + source._2 + "] connected at " + source._1)
       }
     }
-  }
-
-  override def onStop() {
-    // @todo do we need to close the salat connection?
   }
 
   def getSource(name: String): MongoSource = {
@@ -76,6 +63,6 @@ class SalatPlugin(app: Application) extends Plugin {
 
   def getCollection(collectionName:String, sourceName:String = "default"): MongoCollection = {
     val source = getSource(sourceName)
-    MongoConnection(source.host, source.port)(source.db)(collectionName)
+    source.collection(collectionName)
   }
 }

@@ -1,7 +1,7 @@
 package se.radley.plugin.salat
 
 import play.api.mvc._
-import java.net.URLDecoder
+import com.mongodb.casbah.Imports._
 import org.bson.types.ObjectId
 
 object Binders {

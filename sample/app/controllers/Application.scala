@@ -10,17 +10,17 @@ import com.novus.salat._
 object Application extends Controller {
 
   def list() = Action {
-    val users = UserDAO.all.toList
+    val users = User.findAll
     Ok(views.html.list(users))
   }
 
   def listByCountry(country: String) = Action {
-    val users = UserDAO.findByCountry(country).toList
+    val users = User.findByCountry(country)
     Ok(views.html.list(users))
   }
 
   def view(id: ObjectId) = Action {
-    UserDAO.findOneByID(id).map( user =>
+    User.findOneByID(id).map( user =>
       Ok(views.html.user(user))
     ).getOrElse(NotFound)
   }
@@ -30,7 +30,7 @@ object Application extends Controller {
       username = username,
       password = "1234"
     )
-    UserDAO.save(user)
+    User.save(user)
     Ok(views.html.user(user))
   }
 
