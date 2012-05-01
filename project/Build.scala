@@ -14,7 +14,7 @@ object ProjectBuild extends Build {
     resolvers += "Typesafe Snapshots" at "http://repo.typesafe.com/typesafe/snapshots/",
     resolvers += "Novus Snapshots" at "http://repo.novus.com/snapshots/",
     libraryDependencies += "play" %% "play" % "[2.0,)",
-    libraryDependencies += "play" %% "play-test" % "[2.0,)",
+    libraryDependencies += "play" %% "play-test" % "[2.0,)" % "test",
     libraryDependencies += "com.novus" %% "salat-core" % "0.0.8-SNAPSHOT",
 
     publishMavenStyle := true,

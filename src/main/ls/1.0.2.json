@@ -17,10 +17,6 @@
    "name": "play",
    "version": "[2.0,)"
   },{
-   "organization":"play",
-   "name": "play-test",
-   "version": "[2.0,)"
-  },{
    "organization":"com.novus",
    "name": "salat-core",
    "version": "0.0.8-SNAPSHOT"
