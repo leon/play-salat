@@ -21,14 +21,14 @@ class SalatPlugin(app: Application) extends Plugin {
       conn.setWriteConcern(WriteConcern.Safe)
 
       if (user.isDefined && password.isDefined)
-        if (conn.authenticate(user.getOrElse(""), password.getOrElse("")))
+        if (!conn.authenticate(user.getOrElse(""), password.getOrElse("")))
           throw configuration.reportError("mongodb", "Access denied to MongoDB database: [" + db + "] with user: [" + user.getOrElse("") + "]")
       conn(name)
     }
 
     def apply(name: String) = collection(name)
 
-    override def toString() = if(user.isDefined) user.get + "@" else "" + host + ":" + port + "/" + db
+    override def toString() = (if(user.isDefined) user.get + "@" else "") + host + ":" + port + "/" + db
   }
 
   val sources: List[Tuple2[MongoSource, String]] = configuration.subKeys.map { source =>
