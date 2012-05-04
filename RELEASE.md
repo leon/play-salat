@@ -1,3 +1,8 @@
+# v1.0.3
+
+ * Fixed bug in authentication thanks to Dennis Keller
+ * toString now works properly
+
 # v1.0.2
 
  * Simplified plugin alot making it faster

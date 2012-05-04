@@ -8,7 +8,7 @@ Salat is a ORM for MongoDBs scala driver called Casbah.
 Start by adding the plugin, in your `project/Build.scala`
 
     val appDependencies = Seq(
-      "se.radley" %% "play-plugins-salat" % "1.0.2"
+      "se.radley" %% "play-plugins-salat" % "1.0.3"
     )
 
 Then we can add the implicit converstions to and from ObjectId by adding to the routesImport and add ObjectId to all the templates
