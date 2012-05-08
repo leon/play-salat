@@ -14,7 +14,7 @@
  "dependencies": [{
    "organization":"play",
    "name": "play",
-   "version": "[2.0,)"
+   "version": "2.0.1"
   },{
    "organization":"com.novus",
    "name": "salat-core",
