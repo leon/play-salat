@@ -5,6 +5,22 @@ Salat is a ORM for MongoDBs scala driver called Casbah.
  * https://github.com/novus/salat
 
 ## Installation
+
+Use g8 to start a new salat enabled play project
+
+### Install g8 on OSX using homebrew
+    
+    brew update && brew install giter8
+
+Or read about the other ways to install [giter8 here](https://github.com/n8han/giter8)
+
+Then run
+
+    g8 leon/play-salat.g8
+
+It will ask you a couple of questions, and your ready to rock 'n roll.
+
+### Manual installation
 Start by adding the plugin, in your `project/Build.scala`
 
     val appDependencies = Seq(
