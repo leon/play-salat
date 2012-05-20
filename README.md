@@ -4,6 +4,8 @@ Salat is a ORM for MongoDBs scala driver called Casbah.
  * https://github.com/mongodb/casbah
  * https://github.com/novus/salat
 
+[![Build Status](https://secure.travis-ci.org/leon/play-salat.png)](http://travis-ci.org/leon/play-salat)
+
 ## Installation
 
 Use g8 to start a new salat enabled play project
