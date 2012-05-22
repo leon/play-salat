@@ -39,51 +39,27 @@ class SalatPlugin(app: Application) extends Plugin {
       "/" + db
     }
   }
-  
-  /**
-   * Extracts host as String and port as Int from host string
-   * and defaults port to 27017 if it doesn't exist.
-   * 
-   * E.g. localhost:9999 returns (localhost, 9999)
-   * E.g. localhost returns (localhost, 27017)
-   */
-  def hostAndPort(host: String): (String, Int) = host.contains(':') match {
-    case true => {
-      val Array(h,p) = host.split(':')
-      (h,p.toInt)
-    }
-    case false => (host, 27017)
-  }
 
   lazy val sources: Map[String, MongoSource] = configuration.subKeys.map { sourceKey =>
     val source = configuration.getConfig(sourceKey).getOrElse(Configuration.empty)
-    
-    // support MongoURI as per http://www.mongodb.org/display/DOCS/Connections
-    val (host, port, user, password, hosts, db) = source.getString("uri").map{ uri => {
-      val all = MongoURI(uri)
-      val (host,port) = hostAndPort(all.hosts(0))
-      val user = all.username match {
-        case "null" => None
-        case null => None
-        case s => Some(s)
-      }
-      
-      val password = all.password match {
-        case null => None
-        case s => all.password.foldLeft("")(_ + _.toString) match {
-          case "" => None
-          case s => Some(s)
+
+    source.getString("uri").map { str =>
+      // MongoURI config - http://www.mongodb.org/display/DOCS/Connections
+      val uri = MongoURI(str)
+      val hosts = uri.hosts.map { host =>
+        if (host.contains(':')) {
+          val Array(h, p) = host.split(':')
+          new ServerAddress(h, p.toInt)
+        } else {
+          new ServerAddress(host)
         }
-      }
-      
-      // to List[ServerAddress]
-      val hosts = all.hosts.map(host => {
-        val (h,p) = hostAndPort(host)
-        new ServerAddress(h, p)
-      })
-      
-      (host, port, user, password, hosts.toList, all.database)
-    }}.getOrElse{
+      }.toList
+      val db = uri.database
+      val writeConcern = uri.options.getWriteConcern
+      val user = Option(uri.username).filterNot(_.isEmpty)
+      val password = Option(uri.password).map(_.mkString).filterNot(_.isEmpty)
+      sourceKey -> MongoSource(hosts, db, writeConcern, user, password)
+    }.getOrElse {
       val db = source.getString("db").getOrElse(throw configuration.reportError("mongodb." + sourceKey + ".db", "db missing for source[" + sourceKey + "]"))
 
       // Simple config
@@ -101,17 +77,15 @@ class SalatPlugin(app: Application) extends Plugin {
           new ServerAddress(host, port)
         }.toList
       }.getOrElse(List.empty)
-      
-      (host, port, user, password, hosts, db)
+
+      val writeConcern = WriteConcern.valueOf(source.getString("writeconcern", Some(Set("fsyncsafe", "replicassafe", "safe", "normal"))).getOrElse("safe"))
+
+      // If there are replicasets configured go with those otherwise fallback to simple config
+      if (hosts.isEmpty)
+        sourceKey -> MongoSource(List(new ServerAddress(host, port)), db, writeConcern, user, password)
+      else
+        sourceKey -> MongoSource(hosts, db, writeConcern, user, password)
     }
-
-    val writeConcern = WriteConcern.valueOf(source.getString("writeconcern", Some(Set("fsyncsafe", "replicassafe", "safe", "normal"))).getOrElse("safe"))
-
-    // If there are replicasets configured go with those otherwise fallback to simple config
-    if (hosts.isEmpty)
-      sourceKey -> MongoSource(List(new ServerAddress(host, port)), db, writeConcern, user, password)
-    else
-      sourceKey -> MongoSource(hosts, db, writeConcern, user, password)
   }.toMap
 
   override def enabled = !configuration.subKeys.isEmpty
@@ -125,9 +99,20 @@ class SalatPlugin(app: Application) extends Plugin {
     }
   }
 
+  /**
+   * Returns the MongoSource that has been configured in application.conf
+   * @param source The source name ex. default
+   * @return A MongoSource
+   */
   def source(source: String): MongoSource = {
     sources.get(source).getOrElse(throw configuration.reportError("mongodb." + source, source + " doesn't exist"))
   }
 
+  /**
+   * Returns MongoCollection that has been configured in application.conf
+   * @param collectionName The MongoDB collection name
+   * @param sourceName The source name ex. default
+   * @return A MongoCollection
+   */
   def collection(collectionName:String, sourceName:String = "default"): MongoCollection = source(sourceName)(collectionName)
 }

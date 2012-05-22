@@ -1,3 +1,10 @@
+# v1.0.4
+
+ * MongoURI can be used thanks to Juan M Uys
+ * Replicasets can now be used, see sample for more info
+ * the underlaying connection is exposed on a MongoSource
+ * WriteConcern is exposed in configuration
+
 # v1.0.3
 
  * Fixed bug in authentication thanks to Dennis Keller
