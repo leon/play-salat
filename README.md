@@ -57,13 +57,46 @@ now we need to setup our connections. The plugin is modeled after how plays DB p
     #mongodb.default.user = "leon"
     #mongodb.default.password = "123456"
 
-As you can see above the default is to only specify a db name, the plugin will then try to connect to `127.0.0.1:27017` using no username or password.
+	# MongoURI
+	# ~~~~~
+	# a MongoURI can also be used http://www.mongodb.org/display/DOCS/Connections
+	# mongodb.default.uri = "mongodb://127.0.0.1:27017,mongodb.org:1337/salat-test"
 
-## Connecting to more than one db (not necessarily on the same port/ip)
-If you would like to connect to two databases you need to create two names
+	# WriteConcern
+	# ~~~~~
+	# Can be any of the following
+	#
+	# fsyncsafe - Exceptions are raised for network issues and server errors; Write operations wait for the server to flush data to disk.
+	# replicassafe - Exceptions are raised for network issues and server errors; waits for at least 2 servers for the write operation.
+	# safe - Exceptions are raised for network issues and server errors; waits on a server for the write operation.
+	# normal - Exceptions are raised for network issues but not server errors.
+
+	#mongodb.default.writeconcern = "safe"
+
+	# Replica sets
+	# ~~~~~
+	# http://www.mongodb.org/display/DOCS/Why+Replica+Sets
+	#
+	# To user a replicaset instead of a single host, omit optional values and use the configuration below instead.
+	# Since replica sets use public key authentication, user and password won't work together with the replicaset option.
+
+	#mongodb.default.replicaset {
+	#    host1.host = "10.0.0.1"
+	#
+	#    host2.host = "10.0.0.2"
+	#    host2.port = 27018
+	#}
+
+## More that one DB?
+If you would like to connect to two databases you need to create two source names
 
     mongodb.myotherdb.db = "otherdb"
 
-Then when you call `mongoCollection("collectionname", "myotherdb")` you specify the name of the source
+Then you can call `mongoCollection("collectionname", "myotherdb")`
 
-Check out the [sample directory](https://github.com/leon/play-salat/tree/master/sample) and the [wiki](https://github.com/leon/play-salat/wiki)
+- [Sample](https://github.com/leon/play-salat/tree/master/sample)
+
+## Enums?
+If your using Scala Enumerations have a look at my play-enumeration project.
+
+- [play-enumeration](https://github.com/leon/play-enumeration)
