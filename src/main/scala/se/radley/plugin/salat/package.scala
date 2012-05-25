@@ -1,6 +1,7 @@
 package se.radley.plugin
 
 import play.api._
+import play.api.Play.current
 import com.mongodb.casbah.MongoCollection
 import com.novus.salat._
 
