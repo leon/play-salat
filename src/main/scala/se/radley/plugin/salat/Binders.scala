@@ -11,7 +11,7 @@ object Binders {
   /**
    * QueryString binder for ObjectId
    */
-  implicit def bindableObjectIdQueryString = new QueryStringBindable[ObjectId] {
+  implicit def objectIdQueryStringBindable = new QueryStringBindable[ObjectId] {
     def bind(key: String, params: Map[String, Seq[String]]) = params.get(key).flatMap(_.headOption).map { value =>
       if (ObjectId.isValid(value))
         Right(new ObjectId(value))
@@ -24,7 +24,7 @@ object Binders {
   /**
    * Path binder for ObjectId.
    */
-  implicit def bindableObjectIdPath = new PathBindable[ObjectId] {
+  implicit def objectIdPathBindable = new PathBindable[ObjectId] {
     def bind(key: String, value: String) = {
       if (ObjectId.isValid(value))
         Right(new ObjectId(value))
@@ -37,7 +37,7 @@ object Binders {
   /**
    * Convert a ObjectId to a Javascript String
    */
-  implicit def litteralObjectId = new JavascriptLitteral[ObjectId] {
+  implicit def objectIdJavascriptLitteral = new JavascriptLitteral[ObjectId] {
     def to(value: ObjectId) = value.toString
   }
 }

@@ -10,7 +10,7 @@ object Formats {
   /**
    * Formatter for the `ObjectId` type.
    */
-  implicit def objectIdFormat: Formatter[ObjectId] = new Formatter[ObjectId] {
+  implicit def objectIdFormatter: Formatter[ObjectId] = new Formatter[ObjectId] {
 
     def bind(key: String, data: Map[String, String]) = {
       stringFormat.bind(key, data).right.flatMap { s =>
