@@ -1,7 +1,7 @@
 # v1.0.4
 
  * Added play classloader to the context. According to some it might help when adding new fields <https://github.com/novus/salat/issues/32#issuecomment-5871621>
- * MongoURI can be used thanks to Juan M Uys
+ * MongoURI can be used thanks to opyate
  * More specs
  * Replicasets can now be used, see README for more info
  * the underlaying connection is exposed on a MongoSource
