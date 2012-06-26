@@ -20,7 +20,7 @@ object Application extends Controller {
   }
 
   def view(id: ObjectId) = Action {
-    User.findOneByID(id).map( user =>
+    User.findOneById(id).map( user =>
       Ok(views.html.user(user))
     ).getOrElse(NotFound)
   }
