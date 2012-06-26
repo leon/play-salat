@@ -1,3 +1,7 @@
+# v1.0.5
+ * Updated salat to 0.0.8 final
+ * Changed salat dependency to salat instead of salat-core so salat-util also gets included.
+
 # v1.0.4
 
  * Added play classloader to the context. According to some it might help when adding new fields <https://github.com/novus/salat/issues/32#issuecomment-5871621>

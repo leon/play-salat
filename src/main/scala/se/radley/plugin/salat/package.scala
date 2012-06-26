@@ -9,11 +9,11 @@ package object salat {
 
   import salat.Formats._
 
+  type Key = com.novus.salat.annotations.Key
   type Salat = com.novus.salat.annotations.Salat
   type EnumAs = com.novus.salat.annotations.EnumAs
-  type Ignore = com.novus.salat.annotations.Ignore
-  type Key = com.novus.salat.annotations.Key
   type Persist = com.novus.salat.annotations.Persist
+  type Ignore = com.novus.salat.annotations.Ignore
 
   implicit val ctx = {
     val context = new Context {

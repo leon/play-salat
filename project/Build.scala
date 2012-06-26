@@ -3,7 +3,7 @@ import sbt.Keys._
 
 object ProjectBuild extends Build {
 
-  lazy val buildVersion =  "1.0.4"
+  lazy val buildVersion =  "1.0.5"
 
   lazy val root = Project(id = "play-plugins-salat", base = file("."), settings = Project.defaultSettings).settings(
     organization := "se.radley",
@@ -15,7 +15,7 @@ object ProjectBuild extends Build {
     resolvers += "Novus Snapshots" at "http://repo.novus.com/snapshots/",
     libraryDependencies += "play" %% "play" % "2.0.1",
     libraryDependencies += "play" %% "play-test" % "2.0.1" % "test",
-    libraryDependencies += "com.novus" %% "salat-core" % "0.0.8-SNAPSHOT",
+    libraryDependencies += "com.novus" %% "salat" % "0.0.8",
 
     publishMavenStyle := true,
     publishArtifact in Test := false,

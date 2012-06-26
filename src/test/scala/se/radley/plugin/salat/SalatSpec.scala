@@ -56,6 +56,7 @@ object SalatSpec extends Specification {
   }
 
   "Salat Plugin with uri config" should {
+
     lazy val app = salatApp.copy(
       additionalConfiguration = Map(
         ("mongodb.default.uri" -> "mongodb://127.0.0.1:27017/salat-test")
@@ -66,8 +67,7 @@ object SalatSpec extends Specification {
 
     running(app) {
       "start" in {
-        def s = app.plugin[SalatPlugin].get
-        s must beAnInstanceOf[SalatPlugin]
+        salat must beAnInstanceOf[SalatPlugin]
       }
 
       "return a MongoCollection" in {
