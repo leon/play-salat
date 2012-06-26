@@ -1,3 +1,7 @@
+# v1.0.6
+ * Update Play to 2.0.2
+ * Removed salat context from package object due to class reloading problems (ClassCastException cannot cast models.User to models.User), use [global context](https://github.com/novus/salat/blob/master/salat-core/src/main/scala/com/novus/salat/global.scala) or [build your own](https://github.com/novus/salat/wiki/CustomContext)
+
 # v1.0.5
  * Updated salat to 0.0.8 final
  * Changed salat dependency to salat instead of salat-core so salat-util also gets included.

@@ -1,5 +1,7 @@
-# MongoDB Salat plugin for Play Framework 2 (Scala only)
+# MongoDB Salat plugin for Play Framework 2
 Salat is a ORM for MongoDBs scala driver called Casbah.
+
+The plugin's functionality simpifies the use of salat by presenting a simple "play style" configuration and binders for `ObjectId`
 
  * https://github.com/mongodb/casbah
  * https://github.com/novus/salat
@@ -26,7 +28,7 @@ It will ask you a couple of questions, and your ready to rock 'n roll.
 Start by adding the plugin, in your `project/Build.scala`
 
     val appDependencies = Seq(
-      "se.radley" %% "play-plugins-salat" % "1.0.4"
+      "se.radley" %% "play-plugins-salat" % "1.0.6"
     )
 
 Then we can add the implicit converstions to and from ObjectId by adding to the routesImport and add ObjectId to all the templates
@@ -93,6 +95,46 @@ If you would like to connect to two databases you need to create two source name
     mongodb.myotherdb.db = "otherdb"
 
 Then you can call `mongoCollection("collectionname", "myotherdb")`
+
+## What a model looks like
+All models must be case classes otherwise salat doesn't know how to properly transform them into MongoDBObject's
+
+    package models
+
+    import play.api.Play.current
+    import java.util.Date
+    import com.novus.salat._
+    import com.novus.salat.annotations._
+    import com.novus.salat.dao._
+    import com.mongodb.casbah.Imports._
+    import se.radley.plugin.salat._
+    import mongoContext._
+
+    case class User(
+      id: ObjectId = new ObjectId,
+      username: String,
+      password: String,
+      address: Option[Address] = None,
+      added: Date = new Date(),
+      updated: Option[Date] = None,
+      deleted: Option[Date] = None,
+      @Key("company_id")company: Option[ObjectId] = None
+    )
+
+    object User extends ModelCompanion[User, ObjectId] {
+      val collection = mongoCollection("users")
+      val dao = new SalatDAO[User, ObjectId](collection = collection) {}
+
+      def findOneByUsername(username: String): Option[User] = dao.findOne(MongoDBObject("username" -> username))
+      def findByCountry(country: String) = dao.find(MongoDBObject("address.country" -> country))
+    }
+
+## Mongo Context
+All models must contain an implicit salat Context. The context is somewhat like a hibernate dialect.
+You can override mapping names and configure how salat does it's type hinting. read more about it [here](https://github.com/novus/salat/wiki/CustomContext)
+
+In the sample there is a custom `mongoContext`, partly because we need to add plays classloader to salat so it knows when to reload it's graters,
+but also so we can override all models id fields to be serialized to MongoDB's _id.
 
 - [Sample](https://github.com/leon/play-salat/tree/master/sample)
 
