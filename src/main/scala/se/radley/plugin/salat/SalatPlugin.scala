@@ -54,10 +54,10 @@ class SalatPlugin(app: Application) extends Plugin {
           new ServerAddress(host)
         }
       }.toList
-      val db = uri.database
+      val db = uri.database.getOrElse(throw configuration.reportError("mongodb." + sourceKey + ".uri", "db missing for source[" + sourceKey + "]"))
       val writeConcern = uri.options.getWriteConcern
-      val user = Option(uri.username).filterNot(_.isEmpty)
-      val password = Option(uri.password).map(_.mkString).filterNot(_.isEmpty)
+      val user = uri.username
+      val password = uri.password.map(_.mkString).filterNot(_.isEmpty)
       sourceKey -> MongoSource(hosts, db, writeConcern, user, password)
     }.getOrElse {
       val db = source.getString("db").getOrElse(throw configuration.reportError("mongodb." + sourceKey + ".db", "db missing for source[" + sourceKey + "]"))
