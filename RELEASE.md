@@ -1,3 +1,7 @@
+# v1.0.7
+ * Updated salat to 1.9.0 which brings casbah 2.4.1
+ * Changed uri config to work with the changes casbah has done to MongoURI changing from String to Option[String]
+
 # v1.0.6
  * Update Play to 2.0.2
  * Removed salat context from package object due to class reloading problems (ClassCastException cannot cast models.User to models.User), use [global context](https://github.com/novus/salat/blob/master/salat-core/src/main/scala/com/novus/salat/global.scala) or [build your own](https://github.com/novus/salat/wiki/CustomContext)
