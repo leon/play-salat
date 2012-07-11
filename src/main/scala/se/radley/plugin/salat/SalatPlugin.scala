@@ -17,8 +17,10 @@ class SalatPlugin(app: Application) extends Plugin {
     val user: Option[String] = None,
     val password: Option[String] = None
   ){
+    lazy val mongoConnection = MongoConnection(hosts)
+
     def connection = {
-      val c = MongoConnection(hosts)(db)
+      val c = mongoConnection(db)
       c.setWriteConcern(writeConcern)
       c
     }
@@ -37,6 +39,10 @@ class SalatPlugin(app: Application) extends Plugin {
       (if (user.isDefined) user.get + "@" else "") +
       hosts.map(h => h.getHost + ":" + h.getPort).mkString(", ") +
       "/" + db
+    }
+
+    def close() = {
+      mongoConnection.close();
     }
   }
 
@@ -96,6 +102,12 @@ class SalatPlugin(app: Application) extends Plugin {
         case Mode.Test =>
         case mode => Logger("play").info("mongodb [" + source._1 + "] connected at " + source._2)
       }
+    }
+  }
+
+  override def onStop(){
+    sources.map { source =>
+      source._2.close()
     }
   }
 
