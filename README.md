@@ -139,6 +139,6 @@ but also so we can override all models id fields to be serialized to MongoDB's _
 - [Sample](https://github.com/leon/play-salat/tree/master/sample)
 
 ## Enums?
-If your using Scala Enumerations have a look at my play-enumeration project.
+If you're using Scala Enumerations have a look at my play-enumeration project.
 
 - [play-enumeration](https://github.com/leon/play-enumeration)
