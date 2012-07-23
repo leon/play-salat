@@ -27,7 +27,7 @@ class SalatPlugin(app: Application) extends Plugin {
 
     def collection(name: String) = {
       val conn = connection
-      if (user.isDefined && password.isDefined)
+      if (user.isDefined && password.isDefined && !conn.isAuthenticated)
         if (!conn.authenticate(user.getOrElse(""), password.getOrElse("")))
           throw configuration.reportError("mongodb", "Access denied to MongoDB database: [" + db + "] with user: [" + user.getOrElse("") + "]")
       conn(name)
