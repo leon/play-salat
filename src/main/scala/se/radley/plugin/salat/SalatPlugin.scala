@@ -100,7 +100,15 @@ class SalatPlugin(app: Application) extends Plugin {
     sources.map { source =>
       app.mode match {
         case Mode.Test =>
-        case mode => Logger("play").info("mongodb [" + source._1 + "] connected at " + source._2)
+        case mode => {
+          try {
+            source._2.connection.getDatabaseNames()
+          } catch {
+            case e: MongoException => throw configuration.reportError("mongodb." + source._1, "couldn't connect to [" + source._2.hosts.mkString(", ") + "]", Some(e))
+          } finally {
+            Logger("play").info("mongodb [" + source._1 + "] connected at " + source._2)
+          }
+        }
       }
     }
   }
