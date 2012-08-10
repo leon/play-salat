@@ -4,7 +4,7 @@ import play.api._
 import play.api.mvc._
 import play.api.Play.current
 import com.mongodb.casbah.{WriteConcern, MongoCollection, MongoConnection, MongoURI}
-import com.mongodb.ServerAddress
+import com.mongodb.{MongoException, ServerAddress}
 
 class SalatPlugin(app: Application) extends Plugin {
 
@@ -17,20 +17,18 @@ class SalatPlugin(app: Application) extends Plugin {
     val user: Option[String] = None,
     val password: Option[String] = None
   ){
-    lazy val mongoConnection = MongoConnection(hosts)
 
-    def connection = {
-      val c = mongoConnection(db)
+    lazy val connection = {
+      val c = MongoConnection(hosts)
       c.setWriteConcern(writeConcern)
       c
     }
 
     def collection(name: String) = {
-      val conn = connection
-      if (user.isDefined && password.isDefined && !conn.isAuthenticated)
-        if (!conn.authenticate(user.getOrElse(""), password.getOrElse("")))
+      if (user.isDefined && password.isDefined && !connection(db).isAuthenticated)
+        if (!connection(db).authenticate(user.getOrElse(""), password.getOrElse("")))
           throw configuration.reportError("mongodb", "Access denied to MongoDB database: [" + db + "] with user: [" + user.getOrElse("") + "]")
-      conn(name)
+      connection(db)(name)
     }
 
     def apply(name: String) = collection(name)
@@ -42,7 +40,7 @@ class SalatPlugin(app: Application) extends Plugin {
     }
 
     def close() = {
-      mongoConnection.close();
+      connection.close()
     }
   }
 
