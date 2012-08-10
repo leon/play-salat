@@ -12,8 +12,8 @@ object ProjectBuild extends Build {
     scalaVersion := "2.9.1",
     resolvers += "Typesafe Releases" at "http://repo.typesafe.com/typesafe/releases/",
     resolvers += "Typesafe Snapshots" at "http://repo.typesafe.com/typesafe/snapshots/",
-    libraryDependencies += "play" %% "play" % "2.0.2",
-    libraryDependencies += "play" %% "play-test" % "2.0.2" % "test",
+    libraryDependencies += "play" %% "play" % "2.0.3",
+    libraryDependencies += "play" %% "play-test" % "2.0.3" % "test",
     libraryDependencies += "com.novus" %% "salat" % "1.9.0",
 
     publishMavenStyle := true,
