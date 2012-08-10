@@ -13,7 +13,7 @@ The plugin's functionality simpifies the use of salat by presenting a simple "pl
 Use g8 to start a new salat enabled play project
 
 ### Install g8 on OSX using homebrew
-    
+
     brew update && brew install giter8
 
 Or read about the other ways to install [giter8 here](https://github.com/n8han/giter8)
@@ -28,7 +28,7 @@ It will ask you a couple of questions, and your ready to rock 'n roll.
 Start by adding the plugin, in your `project/Build.scala`
 
     val appDependencies = Seq(
-      "se.radley" %% "play-plugins-salat" % "1.0.7"
+      "se.radley" %% "play-plugins-salat" % "1.0.8"
     )
 
 Then we can add the implicit converstions to and from ObjectId by adding to the routesImport and add ObjectId to all the templates

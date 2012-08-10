@@ -1,3 +1,8 @@
+# v1.0.8
+ * Updated play to 2.0.3
+ * Closes all current connections on onStop
+ * Checks connections onStart and throws error if it can't connect to mongoDB
+
 # v1.0.7
  * Updated salat to 1.9.0 which brings casbah 2.4.1
  * Changed uri config to work with the changes casbah has done to MongoURI changing from String to Option[String]
