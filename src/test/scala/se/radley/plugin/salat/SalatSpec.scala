@@ -59,7 +59,7 @@ object SalatSpec extends Specification {
 
     lazy val app = salatApp.copy(
       additionalConfiguration = Map(
-        ("mongodb.default.uri" -> "mongodb://127.0.0.1:27017/salat-test")
+        ("mongodb.default.uri" -> "mongodb://leon:password@127.0.0.1:27017/salat-test")
       )
     )
 
@@ -79,6 +79,13 @@ object SalatSpec extends Specification {
         salat must beAnInstanceOf[SalatPlugin]
         val source = salat.source("default")
         source.hosts must equalTo(List(new ServerAddress("127.0.0.1", 27017)))
+      }
+
+      "populate username and password from URI" in {
+        salat must beAnInstanceOf[SalatPlugin]
+        val source = salat.source("default")
+        source.user must equalTo(Some("leon"))
+        source.password must equalTo(Some("password"))
       }
     }
   }
