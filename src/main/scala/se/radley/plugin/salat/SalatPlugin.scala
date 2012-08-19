@@ -20,16 +20,21 @@ class SalatPlugin(app: Application) extends Plugin {
 
     lazy val connection = {
       val c = MongoConnection(hosts)
+
+      val authOpt = for {
+        u <- user
+        p <- password
+      } yield c(db).authenticate(u, p)
+
+      if (!authOpt.getOrElse(true)) {
+        throw configuration.reportError("mongodb", "Access denied to MongoDB database: [" + db + "] with user: [" + user.getOrElse("") + "]")
+      }
+
       c.setWriteConcern(writeConcern)
       c
     }
 
-    def collection(name: String) = {
-      if (user.isDefined && password.isDefined && !connection(db).isAuthenticated)
-        if (!connection(db).authenticate(user.getOrElse(""), password.getOrElse("")))
-          throw configuration.reportError("mongodb", "Access denied to MongoDB database: [" + db + "] with user: [" + user.getOrElse("") + "]")
-      connection(db)(name)
-    }
+    def collection(name: String) = connection(db)(name)
 
     def apply(name: String) = collection(name)
 
@@ -37,10 +42,6 @@ class SalatPlugin(app: Application) extends Plugin {
       (if (user.isDefined) user.get + "@" else "") +
       hosts.map(h => h.getHost + ":" + h.getPort).mkString(", ") +
       "/" + db
-    }
-
-    def close() = {
-      connection.close()
     }
   }
 
@@ -98,9 +99,9 @@ class SalatPlugin(app: Application) extends Plugin {
     sources.map { source =>
       app.mode match {
         case Mode.Test =>
-        case mode => {
+        case _ => {
           try {
-            source._2.connection.getDatabaseNames()
+            source._2.connection(source._2.db).getCollectionNames()
           } catch {
             case e: MongoException => throw configuration.reportError("mongodb." + source._1, "couldn't connect to [" + source._2.hosts.mkString(", ") + "]", Some(e))
           } finally {
@@ -113,7 +114,7 @@ class SalatPlugin(app: Application) extends Plugin {
 
   override def onStop(){
     sources.map { source =>
-      source._2.close()
+      source._2.connection.close()
     }
   }
 

@@ -1,3 +1,7 @@
+# v1.0.9
+ * Changed to getCollectionNames in onStart because not everyone has admin access to MongoDB
+ * Made the MongoConnection lazy so that it's only created once
+
 # v1.0.8
  * Updated play to 2.0.3
  * Closes all current connections on onStop
