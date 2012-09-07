@@ -24,7 +24,7 @@ object ProjectBuild extends Build {
       <licenses>
         <license>
           <name>Apache 2.0</name>
-          <url>http://www.opensource.org/licenses/Apache-2.0</url>
+          <url>http://www.apache.org/licenses/LICENSE-2.0</url>
           <distribution>repo</distribution>
         </license>
       </licenses>
