@@ -3,7 +3,7 @@ import sbt.Keys._
 
 object ProjectBuild extends Build {
 
-  lazy val buildVersion =  "1.0.9"
+  lazy val buildVersion =  "1.1-SNAPSHOT"
 
   lazy val root = Project(id = "play-plugins-salat", base = file("."), settings = Project.defaultSettings).settings(
     organization := "se.radley",
@@ -14,7 +14,7 @@ object ProjectBuild extends Build {
     resolvers += "Typesafe Snapshots" at "http://repo.typesafe.com/typesafe/snapshots/",
     libraryDependencies += "play" %% "play" % "2.0.3",
     libraryDependencies += "play" %% "play-test" % "2.0.3" % "test",
-    libraryDependencies += "com.novus" %% "salat" % "1.9.0",
+    libraryDependencies += "com.novus" %% "salat" % "1.9.1",
 
     publishMavenStyle := true,
     publishArtifact in Test := false,
