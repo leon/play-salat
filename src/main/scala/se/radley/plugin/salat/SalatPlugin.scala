@@ -62,6 +62,9 @@ class SalatPlugin(app: Application) extends Plugin {
       }
       coll
     }
+
+    def gridFS(bucketName: String = "fs"): GridFS = GridFS(db, bucketName)
+
     override def toString() = {
       (if (user.isDefined) user.get + "@" else "") +
       hosts.map(h => h.getHost + ":" + h.getPort).mkString(", ") +
@@ -175,4 +178,12 @@ class SalatPlugin(app: Application) extends Plugin {
    * @return A MongoCollection
    */
   def cappedCollection(collectionName:String, size: Int, max: Option[Int] = None, sourceName:String = "default"): MongoCollection = source(sourceName).cappedCollection(collectionName, size, max)
+
+  /**
+   * Returns GridFS for configured source
+   * @param bucketName The bucketName for the GridFS instance
+   * @param sourceName The source name ex. default
+   * @return A GridFS
+   */
+  def gridFS(bucketName: String = "fs", sourceName:String = "default"): GridFS = source(sourceName).gridFS(bucketName)
 }
