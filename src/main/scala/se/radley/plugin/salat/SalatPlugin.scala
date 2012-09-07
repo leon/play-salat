@@ -3,8 +3,10 @@ package se.radley.plugin.salat
 import play.api._
 import play.api.mvc._
 import play.api.Play.current
-import com.mongodb.casbah.{WriteConcern, MongoCollection, MongoConnection, MongoURI}
+import com.mongodb.casbah._
 import com.mongodb.{MongoException, ServerAddress}
+import com.mongodb.casbah.gridfs.GridFS
+import commons.MongoDBObject
 
 class SalatPlugin(app: Application) extends Plugin {
 
@@ -12,36 +14,44 @@ class SalatPlugin(app: Application) extends Plugin {
 
   case class MongoSource(
     val hosts: List[ServerAddress],
-    val db: String,
+    val dbName: String,
     val writeConcern: com.mongodb.WriteConcern,
     val user: Option[String] = None,
-    val password: Option[String] = None
+    val password: Option[String] = None,
+    private var conn: MongoConnection = null
   ){
 
-    lazy val connection = {
-      val c = MongoConnection(hosts)
+    def connection: MongoConnection = {
+      if (conn == null) {
+        conn = MongoConnection(hosts)
 
-      val authOpt = for {
-        u <- user
-        p <- password
-      } yield c(db).authenticate(u, p)
+        val authOpt = for {
+          u <- user
+          p <- password
+        } yield connection(dbName).authenticate(u, p)
 
-      if (!authOpt.getOrElse(true)) {
-        throw configuration.reportError("mongodb", "Access denied to MongoDB database: [" + db + "] with user: [" + user.getOrElse("") + "]")
+        if (!authOpt.getOrElse(true)) {
+          throw configuration.reportError("mongodb", "Access denied to MongoDB database: [" + dbName + "] with user: [" + user.getOrElse("") + "]")
+        }
+
+        conn.setWriteConcern(writeConcern)
       }
-
-      c.setWriteConcern(writeConcern)
-      c
+      conn
     }
 
-    def collection(name: String) = connection(db)(name)
+    def reset() {
+      conn.close()
+      conn = null
+    }
 
-    def apply(name: String) = collection(name)
+    def db: MongoDB = connection(dbName)
+
+    def collection(name: String): MongoCollection = db(name)
 
     override def toString() = {
       (if (user.isDefined) user.get + "@" else "") +
       hosts.map(h => h.getHost + ":" + h.getPort).mkString(", ") +
-      "/" + db
+      "/" + dbName
     }
   }
 
@@ -65,7 +75,7 @@ class SalatPlugin(app: Application) extends Plugin {
       val password = uri.password.map(_.mkString).filterNot(_.isEmpty)
       sourceKey -> MongoSource(hosts, db, writeConcern, user, password)
     }.getOrElse {
-      val db = source.getString("db").getOrElse(throw configuration.reportError("mongodb." + sourceKey + ".db", "db missing for source[" + sourceKey + "]"))
+      val dbName = source.getString("db").getOrElse(throw configuration.reportError("mongodb." + sourceKey + ".db", "db missing for source[" + sourceKey + "]"))
 
       // Simple config
       val host = source.getString("host").getOrElse("127.0.0.1")
@@ -87,9 +97,9 @@ class SalatPlugin(app: Application) extends Plugin {
 
       // If there are replicasets configured go with those otherwise fallback to simple config
       if (hosts.isEmpty)
-        sourceKey -> MongoSource(List(new ServerAddress(host, port)), db, writeConcern, user, password)
+        sourceKey -> MongoSource(List(new ServerAddress(host, port)), dbName, writeConcern, user, password)
       else
-        sourceKey -> MongoSource(hosts, db, writeConcern, user, password)
+        sourceKey -> MongoSource(hosts, dbName, writeConcern, user, password)
     }
   }.toMap
 
@@ -101,7 +111,7 @@ class SalatPlugin(app: Application) extends Plugin {
         case Mode.Test =>
         case _ => {
           try {
-            source._2.connection(source._2.db).getCollectionNames()
+            source._2.connection(source._2.dbName).getCollectionNames()
           } catch {
             case e: MongoException => throw configuration.reportError("mongodb." + source._1, "couldn't connect to [" + source._2.hosts.mkString(", ") + "]", Some(e))
           } finally {
@@ -114,7 +124,7 @@ class SalatPlugin(app: Application) extends Plugin {
 
   override def onStop(){
     sources.map { source =>
-      source._2.connection.close()
+      source._2.reset()
     }
   }
 
@@ -128,10 +138,18 @@ class SalatPlugin(app: Application) extends Plugin {
   }
 
   /**
+   * Returns MongoDB for configured source
+   * @param sourceName The source name ex. default
+   * @return A MongoDB
+   */
+  def db(sourceName:String = "default"): MongoDB = source(sourceName).db
+
+  /**
    * Returns MongoCollection that has been configured in application.conf
    * @param collectionName The MongoDB collection name
    * @param sourceName The source name ex. default
    * @return A MongoCollection
    */
-  def collection(collectionName:String, sourceName:String = "default"): MongoCollection = source(sourceName)(collectionName)
+  def collection(collectionName:String, sourceName:String = "default"): MongoCollection = source(sourceName).collection(collectionName)
+
 }
