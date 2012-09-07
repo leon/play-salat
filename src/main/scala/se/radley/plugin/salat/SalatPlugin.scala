@@ -48,6 +48,20 @@ class SalatPlugin(app: Application) extends Plugin {
 
     def collection(name: String): MongoCollection = db(name)
 
+    def cappedCollection(name: String, size: Int, max: Option[Int] = None) = {
+      val coll = if (db.collectionExists(name)) {
+        db(name)
+      } else {
+        import com.mongodb.casbah.Implicits.mongoCollAsScala
+        val options = MongoDBObject.newBuilder
+        options += "capped" -> true
+        options += "size" -> size
+        if (max.isDefined)
+          options += "max" -> max.get
+        db.createCollection(name, options.result()).asScala
+      }
+      coll
+    }
     override def toString() = {
       (if (user.isDefined) user.get + "@" else "") +
       hosts.map(h => h.getHost + ":" + h.getPort).mkString(", ") +
@@ -152,4 +166,13 @@ class SalatPlugin(app: Application) extends Plugin {
    */
   def collection(collectionName:String, sourceName:String = "default"): MongoCollection = source(sourceName).collection(collectionName)
 
+  /**
+   * Returns Capped MongoCollection that has been configured in application.conf
+   * @param collectionName The MongoDB collection name
+   * @param size The capped collection size
+   * @param max The capped collection max number of documents
+   * @param sourceName The source name ex. default
+   * @return A MongoCollection
+   */
+  def cappedCollection(collectionName:String, size: Int, max: Option[Int] = None, sourceName:String = "default"): MongoCollection = source(sourceName).cappedCollection(collectionName, size, max)
 }
