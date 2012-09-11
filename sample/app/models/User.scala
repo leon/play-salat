@@ -21,8 +21,7 @@ case class User(
 )
 
 object User extends ModelCompanion[User, ObjectId] {
-  val collection = mongoCollection("users")
-  val dao = new SalatDAO[User, ObjectId](collection = collection) {}
+  val dao = new SalatDAO[User, ObjectId](collection = mongoCollection("users")) {}
 
   def findOneByUsername(username: String): Option[User] = dao.findOne(MongoDBObject("username" -> username))
   def findByCountry(country: String) = dao.find(MongoDBObject("address.country" -> country))
