@@ -12,5 +12,5 @@ The plugin's functionality simpifies the use of salat by presenting a simple "pl
 
 play-salat is an Open Source project under the Apache License v2.
 
-[source]: https://github.com/novus/salat
-[ci]: http://travis-ci.org/#!/novus/salat
+[source]: https://github.com/leon/play-salat
+[ci]: http://travis-ci.org/#!/leon/play-salat
