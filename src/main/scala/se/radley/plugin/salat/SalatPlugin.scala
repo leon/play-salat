@@ -141,7 +141,9 @@ class SalatPlugin(app: Application) extends Plugin {
 
   override def onStop(){
     sources.map { source =>
-      source._2.reset()
+      // @fix See if we can get around the plugin closing connections in testmode
+      if (app.mode != Mode.Test)
+        source._2.reset()
     }
   }
 
