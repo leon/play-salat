@@ -1,6 +1,5 @@
 language: scala
 scala:
-  scala:
   - 2.9.2
   - 2.9.1
 
