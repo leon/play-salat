@@ -1,5 +1,4 @@
 resolvers ++= Seq(
-  "sbt-idea-repo" at "http://mpeltonen.github.com/maven/",
   "less is" at "http://repo.lessis.me",
   "coda" at "http://repo.codahale.com",
   Resolver.url("sbt-plugin-releases", new URL("http://scalasbt.artifactoryonline.com/scalasbt/sbt-plugin-releases/"))(Resolver.ivyStylePatterns)
