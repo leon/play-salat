@@ -17,8 +17,8 @@ object ProjectBuild extends Build {
     resolvers += "Typesafe Releases" at "http://repo.typesafe.com/typesafe/releases/",
     resolvers += "Typesafe Snapshots" at "http://repo.typesafe.com/typesafe/snapshots/",
 
-    libraryDependencies += "play" % "play_2.9.1" % "2.0.3" % "provided",
-    libraryDependencies += "play" % "play-test_2.9.1" % "2.0.3" % "test",
+    libraryDependencies += "play" % "play_2.9.1" % "2.0.4" % "provided",
+    libraryDependencies += "play" % "play-test_2.9.1" % "2.0.4" % "test",
     libraryDependencies += "com.novus" %% "salat" % "1.9.1"
   )
 }
