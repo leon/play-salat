@@ -28,7 +28,7 @@ It will ask you a couple of questions, and your ready to rock 'n roll.
 Start by adding the plugin, in your `project/Build.scala`
 
     val appDependencies = Seq(
-      "se.radley" %% "play-plugins-salat" % "1.0.9"
+      "se.radley" %% "play-plugins-salat" % "1.1"
     )
 
 Then we can add the implicit converstions to and from ObjectId by adding to the routesImport and add ObjectId to all the templates
@@ -122,12 +122,46 @@ All models must be case classes otherwise salat doesn't know how to properly tra
     )
 
     object User extends ModelCompanion[User, ObjectId] {
-      val collection = mongoCollection("users")
-      val dao = new SalatDAO[User, ObjectId](collection = collection) {}
+      val dao = new SalatDAO[User, ObjectId](collection = mongoCollection("users")) {}
 
       def findOneByUsername(username: String): Option[User] = dao.findOne(MongoDBObject("username" -> username))
       def findByCountry(country: String) = dao.find(MongoDBObject("address.country" -> country))
     }
+
+## Capped Collections
+If you want to use capped collections check this out
+
+    package models
+
+    import play.api.Play.current
+    import java.util.Date
+    import com.novus.salat._
+    import com.novus.salat.annotations._
+    import com.novus.salat.dao._
+    import com.mongodb.casbah.Imports._
+    import se.radley.plugin.salat._
+    import mongoContext._
+
+    case class LogItem(
+      id: ObjectId = new ObjectId,
+      message: String
+    )
+
+    object LogItem extends ModelCompanion[LogItem, ObjectId] {
+      val dao = new SalatDAO[LogItem, ObjectId](collection = mongoCappedCollection("logitems", 1000)) {}
+    }
+
+## GridFS
+If you want to store things in gridfs you can do this
+
+    package models
+
+    import play.api.Play.current
+    import se.radley.plugin.salat._
+    import mongoContext._
+
+    val files = gridFS("myfiles")
+
 
 ## Mongo Context
 All models must contain an implicit salat Context. The context is somewhat like a hibernate dialect.
