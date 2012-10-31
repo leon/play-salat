@@ -3,14 +3,14 @@ import sbt.Keys._
 
 object ProjectBuild extends Build {
 
-  lazy val buildVersion =  "1.1"
+  lazy val buildVersion =  "1.2-SNAPSHOT"
 
   lazy val root = Project(id = "play-plugins-salat", base = file("."), settings = Project.defaultSettings ++ Publish.settings ++ Ls.settings).settings(
     organization := "se.radley",
     description := "MongoDB Salat plugin for PlayFramework 2",
     version := buildVersion,
     scalaVersion := "2.9.1",
-    crossScalaVersions := Seq("2.9.1", "2.9.2"),
+    crossScalaVersions := Seq("2.9.1", "2.10.0-RC1"),
     parallelExecution in Test := false,
     testFrameworks += TestFrameworks.Specs2,
 
@@ -19,7 +19,7 @@ object ProjectBuild extends Build {
 
     libraryDependencies += "play" % "play_2.9.1" % "2.0.4" % "provided",
     libraryDependencies += "play" % "play-test_2.9.1" % "2.0.4" % "test",
-    libraryDependencies += "com.novus" %% "salat" % "1.9.1"
+    libraryDependencies += "com.novus" % "salat_2.9.1" % "1.9.1"
   )
 }
 
