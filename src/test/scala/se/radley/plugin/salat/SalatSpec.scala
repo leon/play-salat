@@ -125,8 +125,8 @@ object SalatSpec extends Specification {
       additionalConfiguration = Map(
         ("mongodb.default.db" -> "salat-test"),
         ("mongodb.default.replicaset.host1.host" -> "10.0.0.1"),
-        ("mongodb.default.replicaset.host1.port" -> "27018"),
-        ("mongodb.default.replicaset.host2.host" -> "10.0.0.2")
+        ("mongodb.default.replicaset.host2.host" -> "10.0.0.2"),
+        ("mongodb.default.replicaset.host2.port" -> "27018")
       )
     )
 
@@ -139,7 +139,7 @@ object SalatSpec extends Specification {
 
       "populate hosts from config" in {
         val source = salat.source("default")
-        source.hosts must equalTo(List(new ServerAddress("10.0.0.1", 27018), new ServerAddress("10.0.0.2", 27017)))
+        source.hosts must equalTo(List(new ServerAddress("10.0.0.1", 27017), new ServerAddress("10.0.0.2", 27018)))
       }
     }
   }

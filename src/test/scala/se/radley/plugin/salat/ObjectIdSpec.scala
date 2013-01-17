@@ -6,13 +6,12 @@ import play.api.mvc._
 import play.api.test._
 import play.api.test.Helpers._
 import java.io.File
-import play.api.Play.current
 import play.api.libs.json._
 import play.api.libs.json.Json._
-import play.api.libs.json.Generic._
 import org.bson.types.ObjectId
 import Formats.objectId
 import Binders._
+import play.api.Play.current
 
 object ObjectIdSpec extends Specification {
 

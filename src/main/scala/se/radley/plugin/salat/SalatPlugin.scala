@@ -107,7 +107,7 @@ class SalatPlugin(app: Application) extends Plugin {
           val host = c.getString("host").getOrElse(throw configuration.reportError("mongodb." + sourceKey + ".replicaset", "host missing for replicaset in source[" + sourceKey + "]"))
           val port = c.getInt("port").getOrElse(27017)
           new ServerAddress(host, port)
-        }.toList
+        }.toList.reverse
       }.getOrElse(List.empty)
 
       val writeConcern = WriteConcern.valueOf(source.getString("writeconcern", Some(Set("fsyncsafe", "replicassafe", "safe", "normal"))).getOrElse("safe"))
