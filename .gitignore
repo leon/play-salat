@@ -6,3 +6,5 @@ project/sonatype.sbt
 project/project
 project/target
 tmp
+
+/logs/
