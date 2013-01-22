@@ -13,17 +13,14 @@ import com.mongodb.ServerAddress
 object SalatSpec extends Specification {
 
   lazy val salatApp = FakeApplication(
-    additionalPlugins = Seq("se.radley.plugin.salat.SalatPlugin")
-  )
+    additionalPlugins = Seq("se.radley.plugin.salat.SalatPlugin"))
 
   "Salat Plugin with basic config" should {
 
     lazy val app = salatApp.copy(
       additionalConfiguration = Map(
         ("mongodb.default.db" -> "salat-test"),
-        ("mongodb.default.writeconcern" -> "normal")
-      )
-    )
+        ("mongodb.default.writeconcern" -> "normal")))
 
     lazy val salat = app.plugin[SalatPlugin].get
 
@@ -59,9 +56,7 @@ object SalatSpec extends Specification {
 
     lazy val app = salatApp.copy(
       additionalConfiguration = Map(
-        ("mongodb.default.uri" -> "mongodb://127.0.0.1:27017/salat-test")
-      )
-    )
+        ("mongodb.default.uri" -> "mongodb://127.0.0.1:27017/salat-test")))
 
     lazy val salat = app.plugin[SalatPlugin].get
 
@@ -95,9 +90,7 @@ object SalatSpec extends Specification {
   "Salat Plugin with multiple uri config" should {
     lazy val app = salatApp.copy(
       additionalConfiguration = Map(
-        ("mongodb.default.uri" -> "mongodb://127.0.0.1:27017,mongodb.org:1337/salat-test")
-      )
-    )
+        ("mongodb.default.uri" -> "mongodb://127.0.0.1:27017,mongodb.org:1337/salat-test")))
 
     lazy val salat = app.plugin[SalatPlugin].get
 
@@ -126,9 +119,7 @@ object SalatSpec extends Specification {
         ("mongodb.default.db" -> "salat-test"),
         ("mongodb.default.replicaset.host1.host" -> "10.0.0.1"),
         ("mongodb.default.replicaset.host1.port" -> "27018"),
-        ("mongodb.default.replicaset.host2.host" -> "10.0.0.2")
-      )
-    )
+        ("mongodb.default.replicaset.host2.host" -> "10.0.0.2")))
 
     lazy val salat = app.plugin[SalatPlugin].get
 
@@ -143,4 +134,35 @@ object SalatSpec extends Specification {
       }
     }
   }
+
+  "Salat Plugin with options" should {
+
+    lazy val app = salatApp.copy(
+      additionalConfiguration = Map(
+        ("mongodb.default.db" -> "salat-with-options"),
+        ("mongodb.default.options.connectionsPerHost" -> "255"),
+        ("mongodb.default.options.threadsAllowedToBlockForConnectionMultiplier" -> "24")))
+
+    lazy val salat = app.plugin[SalatPlugin].get
+
+    running(app) {
+      "start" in {
+        salat must beAnInstanceOf[SalatPlugin]
+      }
+
+      "return a MongoCollection" in {
+        val col = salat.collection("salat-collection")
+        col must beAnInstanceOf[MongoCollection]
+      }
+
+      "set mongo options" in {
+        val col = salat.collection("salat-collection")
+        val options = col.db.underlying.getMongo().getMongoOptions()
+        options.connectionsPerHost must equalTo(255)
+        options.threadsAllowedToBlockForConnectionMultiplier must equalTo(24)
+      }
+
+    }
+  }
+
 }
