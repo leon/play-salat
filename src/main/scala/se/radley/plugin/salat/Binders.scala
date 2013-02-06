@@ -3,6 +3,8 @@ package se.radley.plugin.salat
 import play.api.mvc._
 import com.mongodb.casbah.Imports._
 import org.bson.types.ObjectId
+import play.api.libs.json._
+import play.api.data.validation.ValidationError
 
 object Binders {
 
@@ -39,5 +41,27 @@ object Binders {
    */
   implicit def objectIdJavascriptLitteral = new JavascriptLitteral[ObjectId] {
     def to(value: ObjectId) = value.toString
+  }
+
+  /**
+   * Read ObjectId
+   */
+  implicit object objectIdReads extends Reads[ObjectId] {
+    def reads(json: JsValue) = json match {
+      case JsString(s) => {
+        if (ObjectId.isValid(s))
+          JsSuccess(new ObjectId(s))
+        else
+          JsError(ValidationError("validate.error.objectid"))
+      }
+      case _ => JsError(Seq(JsPath() -> Seq(ValidationError("validate.error.expected.jsstring"))))
+    }
+  }
+
+  /**
+   * Write ObjectId
+   */
+  implicit object objectIdWrites extends Writes[ObjectId] {
+    def writes(o: ObjectId) = JsString(o.toString)
   }
 }

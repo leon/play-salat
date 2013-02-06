@@ -2,6 +2,7 @@ package se.radley.plugin.salat
 
 import org.specs2.mutable.Specification
 import play.api._
+import data.validation.ValidationError
 import play.api.mvc._
 import play.api.test._
 import play.api.test.Helpers._
@@ -41,6 +42,19 @@ object ObjectIdSpec extends Specification {
     "bind to JavascriptLitteral" in {
       val id = new ObjectId()
       objectIdJavascriptLitteral.to(id) must equalTo(id.toString)
+    }
+
+    "write to json and read back into ObjectId" in {
+      val id = new ObjectId()
+      Json.toJson[ObjectId](id).validate[ObjectId] must beEqualTo(JsSuccess(id))
+    }
+
+    "invalidate if faulty not JSString" in {
+      JsNumber(1).validate[ObjectId] must equalTo(JsError(Seq(JsPath() -> Seq(ValidationError("validate.error.expected.jsstring")))))
+    }
+
+    "invalidate if faulty not ObjectId" in {
+      JsString("not a object id").validate[ObjectId] must equalTo(JsError(Seq(JsPath() -> Seq(ValidationError("validate.error.objectid")))))
     }
   }
 }
