@@ -7,6 +7,7 @@ import com.mongodb.casbah._
 import com.mongodb.{MongoException, ServerAddress}
 import com.mongodb.casbah.gridfs.GridFS
 import commons.MongoDBObject
+import com.mongodb.MongoOptions
 
 class SalatPlugin(app: Application) extends Plugin {
 
@@ -18,12 +19,13 @@ class SalatPlugin(app: Application) extends Plugin {
     val writeConcern: com.mongodb.WriteConcern,
     val user: Option[String] = None,
     val password: Option[String] = None,
+    val options: Option[MongoOptions],
     private var conn: MongoConnection = null
   ){
 
     def connection: MongoConnection = {
       if (conn == null) {
-        conn = MongoConnection(hosts)
+        conn = options.map(opts => MongoConnection(hosts, opts)).getOrElse(MongoConnection(hosts))
 
         val authOpt = for {
           u <- user
@@ -68,12 +70,13 @@ class SalatPlugin(app: Application) extends Plugin {
     override def toString() = {
       (if (user.isDefined) user.get + "@" else "") +
       hosts.map(h => h.getHost + ":" + h.getPort).mkString(", ") +
-      "/" + dbName
+      "/" + dbName + options.map(" with Options[" + _ + "]").getOrElse("")
     }
   }
 
   lazy val sources: Map[String, MongoSource] = configuration.subKeys.map { sourceKey =>
     val source = configuration.getConfig(sourceKey).getOrElse(Configuration.empty)
+    val options = OptionsFromConfig(source.getConfig("options"))
 
     source.getString("uri").map { str =>
       // MongoURI config - http://www.mongodb.org/display/DOCS/Connections
@@ -90,7 +93,7 @@ class SalatPlugin(app: Application) extends Plugin {
       val writeConcern = uri.options.getWriteConcern
       val user = uri.username
       val password = uri.password.map(_.mkString).filterNot(_.isEmpty)
-      sourceKey -> MongoSource(hosts, db, writeConcern, user, password)
+      sourceKey -> MongoSource(hosts, db, writeConcern, user, password, options)
     }.getOrElse {
       val dbName = source.getString("db").getOrElse(throw configuration.reportError("mongodb." + sourceKey + ".db", "db missing for source[" + sourceKey + "]"))
 
@@ -114,9 +117,9 @@ class SalatPlugin(app: Application) extends Plugin {
 
       // If there are replicasets configured go with those otherwise fallback to simple config
       if (hosts.isEmpty)
-        sourceKey -> MongoSource(List(new ServerAddress(host, port)), dbName, writeConcern, user, password)
+        sourceKey -> MongoSource(List(new ServerAddress(host, port)), dbName, writeConcern, user, password, options)
       else
-        sourceKey -> MongoSource(hosts, dbName, writeConcern, user, password)
+        sourceKey -> MongoSource(hosts, dbName, writeConcern, user, password, options)
     }
   }.toMap
 

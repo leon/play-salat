@@ -89,10 +89,23 @@ now we need to setup our connections. The plugin is modeled after how plays DB p
 	#    host2.port = 27018
 	#}
 
+	# Mongo Options
+	# ~~~~~
+	# http://api.mongodb.org/java/2.8.0/com/mongodb/MongoOptions.html
+	#
+	# For passing custom options to the MongoConnection add the properties under "options". Add just the ones which are different from defaults.
+
+	#mongodb.default.options {
+	#    connectionsPerHost = 100
+	#    threadsAllowedToBlockForConnectionMultiplier = 1000
+	#    connectTimeout = 60000
+	#}
+
 ## More that one DB?
-If you would like to connect to two databases you need to create two source names
+If you would like to connect to two databases you need to create two source names. You also can specify different options per database
 
     mongodb.myotherdb.db = "otherdb"
+    mongodb.myotherdb.options.connectionsPerHost = 80
 
 Then you can call `mongoCollection("collectionname", "myotherdb")`
 
