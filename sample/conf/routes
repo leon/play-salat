@@ -2,11 +2,11 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
+->      /api                        api.Routes
+
 # Home page
 GET     /                           controllers.Application.list
-GET     /by-country/:country        controllers.Application.listByCountry(country)
-GET     /create/:username           controllers.Application.create(username)
-GET     /view/:id                   controllers.Application.view(id: ObjectId)
+GET     /:id                        controllers.Application.view(id: ObjectId)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

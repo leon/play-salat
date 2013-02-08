@@ -1,0 +1,7 @@
+
+# User
+GET      /user                                   controllers.api.Users.index()
+POST     /user                                   controllers.api.Users.create()
+GET      /user/:id                               controllers.api.Users.view(id: ObjectId)
+PUT      /user/:id                               controllers.api.Users.update(id: ObjectId)
+DELETE   /user/:id                               controllers.api.Users.delete(id: ObjectId)
