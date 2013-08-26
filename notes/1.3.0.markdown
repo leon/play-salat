@@ -1,0 +1,2 @@
+- Salat 1.9.2
+- Uppdated dependencies

@@ -3,7 +3,7 @@ import sbt.Keys._
 
 object ProjectBuild extends Build {
 
-  lazy val buildVersion =  "1.2"
+  lazy val buildVersion =  "1.3.0"
 
   lazy val root = Project(id = "play-plugins-salat", base = file("."), settings = Project.defaultSettings ++ Publish.settings ++ Ls.settings).settings(
     organization := "se.radley",
@@ -18,11 +18,11 @@ object ProjectBuild extends Build {
     resolvers += "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
 
     libraryDependencies ++= Seq(
-      "play" %% "play" % "2.1.0" % "provided",
-      "play" % "play-exceptions" % "2.1.0" % "provided",
+      "play" %% "play" % "2.1.3" % "provided",
+      "play" % "play-exceptions" % "2.1.3" % "provided",
       "play" %% "play-test" % "2.1.0" % "test",
-      "com.novus" %% "salat" % "1.9.2-SNAPSHOT",
-      "org.mongodb" %% "casbah-gridfs" % "2.5.0"
+      "com.novus" %% "salat" % "1.9.2",
+      "org.mongodb" %% "casbah-gridfs" % "2.6.2"
     )
   )
 }
