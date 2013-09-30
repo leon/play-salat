@@ -4,10 +4,10 @@ import play.api._
 import play.api.mvc._
 import play.api.Play.current
 import com.mongodb.casbah._
-import com.mongodb.{MongoException, ServerAddress}
+import com.mongodb.{MongoClientOptions, MongoException, ServerAddress, MongoOptions}
 import com.mongodb.casbah.gridfs.GridFS
 import commons.MongoDBObject
-import com.mongodb.MongoOptions
+import com.mongodb.casbah.MongoClientOptions
 
 class SalatPlugin(app: Application) extends Plugin {
 
@@ -19,13 +19,13 @@ class SalatPlugin(app: Application) extends Plugin {
     val writeConcern: com.mongodb.WriteConcern,
     val user: Option[String] = None,
     val password: Option[String] = None,
-    val options: Option[MongoOptions],
-    private var conn: MongoConnection = null
+    val options: Option[MongoClientOptions],
+    private var conn: MongoClient = null
   ){
 
-    def connection: MongoConnection = {
+    def connection: MongoClient = {
       if (conn == null) {
-        conn = options.map(opts => MongoConnection(hosts, opts)).getOrElse(MongoConnection(hosts))
+        conn = options.map(opts => MongoClient(hosts, opts)).getOrElse(MongoClient(hosts))
 
         val authOpt = for {
           u <- user
@@ -50,17 +50,16 @@ class SalatPlugin(app: Application) extends Plugin {
 
     def collection(name: String): MongoCollection = db(name)
 
-    def cappedCollection(name: String, size: Int, max: Option[Int] = None) = {
+    def cappedCollection(name: String, size: Long, max: Option[Long] = None): MongoCollection = {
       val coll = if (db.collectionExists(name)) {
         db(name)
       } else {
-        import com.mongodb.casbah.Implicits.mongoCollAsScala
         val options = MongoDBObject.newBuilder
         options += "capped" -> true
         options += "size" -> size
         if (max.isDefined)
           options += "max" -> max.get
-        db.createCollection(name, options.result()).asScala
+        new MongoCollection(db.createCollection(name, options.result()))
       }
       coll
     }
@@ -76,7 +75,7 @@ class SalatPlugin(app: Application) extends Plugin {
 
   lazy val sources: Map[String, MongoSource] = configuration.subKeys.map { sourceKey =>
     val source = configuration.getConfig(sourceKey).getOrElse(Configuration.empty)
-    val options = OptionsFromConfig(source.getConfig("options"))
+    val options: Option[MongoClientOptions] = source.getConfig("options").flatMap(opts => OptionsFromConfig(opts))
 
     source.getString("uri").map { str =>
       // MongoURI config - http://www.mongodb.org/display/DOCS/Connections
@@ -182,7 +181,7 @@ class SalatPlugin(app: Application) extends Plugin {
    * @param sourceName The source name ex. default
    * @return A MongoCollection
    */
-  def cappedCollection(collectionName:String, size: Int, max: Option[Int] = None, sourceName:String = "default"): MongoCollection = source(sourceName).cappedCollection(collectionName, size, max)
+  def cappedCollection(collectionName:String, size: Long, max: Option[Long] = None, sourceName:String = "default"): MongoCollection = source(sourceName).cappedCollection(collectionName, size, max)
 
   /**
    * Returns GridFS for configured source

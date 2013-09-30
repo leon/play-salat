@@ -25,7 +25,7 @@ package object salat {
    * @param sourceName The configured source name
    * @return MongoCollection
    */
-  def mongoCappedCollection(collectionName: String, size: Int, max: Option[Int] = None, sourceName:String = "default")(implicit app: Application): MongoCollection = {
+  def mongoCappedCollection(collectionName: String, size: Long, max: Option[Long] = None, sourceName:String = "default")(implicit app: Application): MongoCollection = {
     app.plugin[SalatPlugin].map(_.cappedCollection(collectionName, size, max, sourceName)).getOrElse(throw new PlayException("SalatPlugin is not registered.", "You need to register the plugin with \"500:se.radley.plugin.salat.SalatPlugin\" in conf/play.plugins"))
   }
 
