@@ -5,6 +5,7 @@ import com.mongodb._
 import play.api.Configuration
 import javax.net.SocketFactory
 import org.specs2.specification.AllExpectations
+import javax.net.ssl.SSLSocketFactory
 
 class OptionsFromConfigSpec extends Specification with AllExpectations {
 
@@ -53,6 +54,20 @@ class OptionsFromConfigSpec extends Specification with AllExpectations {
     "Return none options if config is empty" in {
       val options = OptionsFromConfig(Configuration.empty)
       options must beNone
+    }
+
+    "Set SSL factory is ssl = true" in {
+      val conf = Map(
+        ("mongodb.default.options.ssl" -> "true")
+      )
+
+      val configuration = Configuration.from(conf).getConfig("mongodb.default.options").get
+      val optionsOpt = OptionsFromConfig(configuration)
+
+      optionsOpt must beSome
+      val options = optionsOpt.get
+
+      options.getSocketFactory must haveClass[SSLSocketFactory]
     }
   }
   

@@ -3,6 +3,7 @@ package se.radley.plugin.salat
 import play.api.Configuration
 import com.mongodb.casbah.MongoOptions
 import com.mongodb._
+import javax.net.ssl.SSLSocketFactory
 import scala.Some
 
 object OptionsFromConfig {
@@ -43,6 +44,7 @@ object OptionsFromConfig {
     config.getInt("socketTimeout").map(v => builder.socketTimeout(v))
     config.getInt("threadsAllowedToBlockForConnectionMultiplier").map(v => builder.threadsAllowedToBlockForConnectionMultiplier(v))
     config.getString("writeConcern").map(name => WriteConcern.valueOf(name)).map(v => builder.writeConcern(v))
+    config.getBoolean("ssl").map(v => if (v) builder.socketFactory(SSLSocketFactory.getDefault()))
 
     Some(builder.build())
   }
