@@ -5,7 +5,7 @@ object ProjectBuild extends Build {
 
   lazy val buildVersion =  "1.4.0-SNAPSHOT"
 
-  lazy val root = Project(id = "play-plugins-salat", base = file("."), settings = Project.defaultSettings ++ Publish.settings ++ Ls.settings).settings(
+  lazy val root = Project(id = "play-plugins-salat", base = file("."), settings = Project.defaultSettings ++ Publish.settings).settings(
     organization := "se.radley",
     description := "MongoDB Salat plugin for PlayFramework 2",
     version := buildVersion,
@@ -54,17 +54,5 @@ object Publish {
           <url>http://github.com/leon</url>
         </developer>
       </developers>)
-  )
-}
-
-object Ls {
-
-  import _root_.ls.Plugin.LsKeys._
-
-  lazy val settings = _root_.ls.Plugin.lsSettings ++ Seq(
-    (description in lsync) := "MongoDB Salat plugin for Play Framework 2.x",
-    licenses in lsync <<= licenses,
-    (tags in lsync) := Seq("play", "playframework", "salat", "mongo", "casbah", "object document mapping", "ODM", "mapper"),
-    (docsUrl in lsync) := Some(new URL("https://github.com/leon/play-salat"))
   )
 }
