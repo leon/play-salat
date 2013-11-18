@@ -1,4 +1,4 @@
-- Salat 1.9.3
-- Play 2.2.0
+- Salat 1.9.4
+- Play 2.2.1
 - Possible breaking change, cappedCollection size and max is now `Long` instead of `Int` #46
 - Change to MongoClient and use MongoClientOptions instead of the now depricated MongoOptions #51
