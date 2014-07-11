@@ -5,6 +5,7 @@ import com.mongodb.casbah.MongoOptions
 import com.mongodb._
 import javax.net.ssl.SSLSocketFactory
 import scala.Some
+import javax.net.SocketFactory
 
 object OptionsFromConfig {
 
@@ -39,7 +40,7 @@ object OptionsFromConfig {
         case ex: IllegalArgumentException => None
       }
     }.map(v => builder.readPreference(v))
-    //config.getBoolean("socketFactory").map(v => builder.socketFactory(v))
+    config.getString("socketFactory").flatMap(className => getInstanceFromName[SocketFactory](className)).map(v => builder.socketFactory(v))
     config.getBoolean("socketKeepAlive").map(v => builder.socketKeepAlive(v))
     config.getInt("socketTimeout").map(v => builder.socketTimeout(v))
     config.getInt("threadsAllowedToBlockForConnectionMultiplier").map(v => builder.threadsAllowedToBlockForConnectionMultiplier(v))
