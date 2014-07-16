@@ -132,7 +132,7 @@ object SalatSpec extends Specification {
 
       "populate hosts from config" in {
         val source = salat.source("default")
-        source.hosts must equalTo(List(new ServerAddress("10.0.0.1", 27017), new ServerAddress("10.0.0.2", 27018)))
+        source.hosts must contain(new ServerAddress("10.0.0.1", 27017), new ServerAddress("10.0.0.2", 27018))
       }
     }
   }
