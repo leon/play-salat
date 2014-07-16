@@ -112,7 +112,10 @@ class SalatPlugin(app: Application) extends Plugin {
         }.toList.reverse
       }.getOrElse(List.empty)
 
-      val writeConcern = WriteConcern.valueOf(source.getString("writeconcern", Some(Set("fsyncsafe", "replicassafe", "safe", "normal"))).getOrElse("safe"))
+      val writeConcern =
+        source.getString("writeconcern", Some(Set("fsyncsafe", "replicassafe", "safe", "normal")))
+          .flatMap(WriteConcern.valueOf)
+          .getOrElse(WriteConcern.Safe)
 
       // If there are replicasets configured go with those otherwise fallback to simple config
       if (hosts.isEmpty)

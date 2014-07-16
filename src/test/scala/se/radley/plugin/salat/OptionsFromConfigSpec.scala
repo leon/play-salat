@@ -5,7 +5,7 @@ import com.mongodb._
 import play.api.Configuration
 import javax.net.SocketFactory
 import org.specs2.specification.AllExpectations
-import javax.net.ssl.SSLSocketFactory
+import sun.security.ssl.SSLSocketFactoryImpl
 
 class OptionsFromConfigSpec extends Specification with AllExpectations {
 
@@ -22,7 +22,7 @@ class OptionsFromConfigSpec extends Specification with AllExpectations {
         ("mongodb.default.options.maxAutoConnectRetryTime" -> "20"),
         ("mongodb.default.options.maxWaitTime" -> "68000"),
         ("mongodb.default.options.readPreference" -> "PRIMARY"),
-        ("mongodb.default.options.socketFactory" -> "se.radley.plugin.salat.NonDefaultDBSocketFactory"),
+        ("mongodb.default.options.socketFactory" -> "se.radley.plugin.salat.NonDefaultSocketFactory"),
         ("mongodb.default.options.socketKeepAlive" -> "true"),
         ("mongodb.default.options.socketTimeout" -> "21000"),
         ("mongodb.default.options.threadsAllowedToBlockForConnectionMultiplier" -> "22"),
@@ -67,7 +67,7 @@ class OptionsFromConfigSpec extends Specification with AllExpectations {
       optionsOpt must beSome
       val options = optionsOpt.get
 
-      options.getSocketFactory must haveClass[SSLSocketFactory]
+      options.getSocketFactory must haveClass[SSLSocketFactoryImpl]
     }
   }
   
