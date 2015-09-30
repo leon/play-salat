@@ -1,3 +1,6 @@
+# Disclaimer
+**This repo is not actively maintained and is looking for contributors.**
+
 # MongoDB Salat plugin for Play Framework 2
 Salat is a ORM for MongoDBs scala driver called Casbah.
 
