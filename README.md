@@ -1,5 +1,7 @@
 >## Deprecation Notice
 >play-salat is now maintained by @amarjitmult over at [Cloud Insights](https://github.com/cloudinsights/play-salat).
+>
+>https://github.com/cloudinsights/play-salat
 
 # MongoDB Salat plugin for Play Framework 2
 Salat is a ORM for MongoDBs scala driver called Casbah.
